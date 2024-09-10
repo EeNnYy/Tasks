@@ -1,22 +1,16 @@
-html {
-  font-size: 14px;
+.Pizza-product-container {
+    display: flex;
+}
+.my-flex-block:hover {
+    border: 1px solid #d0d0d0;
+}
+.Image{
+    width:auto;
+    height:auto;
+    max-width:100%
+}
+.Price{
+    font-size:larger;
+    font-weight:700;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}
