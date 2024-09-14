@@ -1,6 +1,42 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
-}
-<h1>@ViewData["Title"]</h1>
+﻿<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<div class="Pizza-product-container">
 
-<p>Use this page to detail your site's privacy policy.</p>
+</div>
+<script>
+    function asd() {
+        var items = [
+            {
+                price: "660Р",
+                src: "https://cagliari.delivery/images/dishes/capriccio_1.jpg",
+                compostiion: `Сыр моцарелла, Соус "Барбекю", Соус "Кальяри", Пепперони, Овощи гриль, Бекон, Ветчина`,
+                name: "Capricio",
+            },
+            {
+                price: "780Р",
+                src: "https://cagliari.delivery/images/dishes/xxxl_1.jpg",
+                compostiion: `Сыр моцарелла, Соус "Барбекю", Соус "Кальяри", Пепперони, Овощи гриль, Бекон, Ветчина`,
+                name: "XXL",
+            },
+            {
+                price: "630Р",
+                src: "https://cagliari.delivery/images/dishes/4_vkusa_1.jpg",
+                compostiion: `Сыр моцарелла, Соус "Барбекю", Соус "Кальяри", Пепперони, Овощи гриль, Бекон, Ветчина`,
+                name: "4 вкуса",
+            },
+            {
+                price: "650Р",
+                src: "https://cagliari.delivery/images/dishes/amazonka_1.jpg",
+                compostiion: `Соус "Томатный", Сыр моцарелла, Куриная грудка, Брокколи, Огурцы маринованные`,
+                name: "Амазонка"
+            }
+        ];
+        let str = "";
+        for (var i = 0; i < items.length; i++) {
+            str += `<div class="my-flex-block"><img class="Image" src="${items[i].src}" alt="XXL" /><p class="Title">${items[i].name}</p><p class="Composition">${items[i].compostiion}</p> <p class="Price">${items[i].price}</p> </div>`;
+        }
+        $(".Pizza-product-container").html(str);
+
+    }
+    asd();
+</script>
+
