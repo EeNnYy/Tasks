@@ -1,5 +1,6 @@
 .Pizza-product-container {
     display: flex;
+
 }
 .my-flex-block:hover {
     border: 1px solid #d0d0d0;
