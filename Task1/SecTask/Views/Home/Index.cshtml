@@ -1,0 +1,14 @@
+﻿@model List<PizzaModel>
+
+
+<div class="Pizza-product-container">
+    @foreach(var item in Model)
+    {
+        <div class="my-flex-block">
+            <img class="Image" src="~/Images/@item.Src" alt="@item.Title" />
+            <p class="Title">@item.Title</p>
+            <p class="Composition">@item.Description</p>
+            <p class="Price">@item.Price</p>
+        </div>
+    }
+</div>
