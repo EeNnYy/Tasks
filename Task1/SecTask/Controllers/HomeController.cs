@@ -15,15 +15,22 @@ namespace SecTask.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-       public JsonResult GetPizzaJson ()
+        public JsonResult GetPizzaJson()
         {
-;           PizzaModelRepositories pizzaModelRepositories = new PizzaModelRepositories ();
+            PizzaModelRepositories pizzaModelRepositories = new PizzaModelRepositories();
 
             return Json(pizzaModelRepositories.GetPizzaModels());
         }
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
+        }
+
+        public IActionResult Detail(int id)
+        {
+            PizzaModelRepositories pizzaModelRepositories = new PizzaModelRepositories();
+            var pizza = pizzaModelRepositories.FindById(id);
+            return View(pizza);
         }
         public IActionResult Privacy()
         {
@@ -34,7 +41,7 @@ namespace SecTask.Controllers
             PizzaModelRepositories pizzaModelRepositories = new PizzaModelRepositories();
             return View(pizzaModelRepositories.GetPizzaModels());
         }
-       
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

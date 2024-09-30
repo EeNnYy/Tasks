@@ -1,26 +1,32 @@
 ﻿
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <div class="Pizza-product-container">
-    <div>dsadasdasddasdasd</div>
 </div>
 <script>
-        $.ajax({
-            url: "/Home/GetPizzaJson",
-            type: 'GET',
-            success: function (pizza) {
-                str = "";
-                for (let i = 0; i < pizza.length; i++) {
-                    str += ` <div class="my-flex-block">
-                        <img class="Image"  src="/Images/${pizza[i].src}" alt"${pizza[i].title}" />
-                        <p class="Title">${pizza[i].title}</p>
-                        <p class="Composition">${pizza[i].description}</p>
-                        <p class="Price">${pizza[i].price}</p>
-                    </div>`
-                }
-                $(".Pizza-product-container").html(str)
+    $.ajax({
+        url: "/Home/GetPizzaJson",
+        type: 'GET',
+        success: function (pizza) {
+            str = "";
+            for (let i = 0; i < pizza.length; i++) {
+                str += ` <div class="my-flex-block">
+                                    <img class="Image"  src="/Images/${pizza[i].src}" alt"${pizza[i].title}" />
+                                        <a href="/Home/Detail/${pizza[i].id}"; id="${pizza[i].id}";class="Title">${pizza[i].title}</a>
+                                    <p class="Composition">${pizza[i].description}</p>
+                                    <p class="Price">${pizza[i].price}</p>
+                                </div>`
             }
-        });
+            $(".Pizza-product-container").html(str)
+            Image.onclick = function () {
+                window.location.href = '/Home/Detail/${id}';
+            };
+            $('.Image').on('click', function () {
+                window.location.href = '/Home/Detail/' + $('.Image').attr('data-id');
+            })
+        }
+    });
 </script>
+
 
 
 

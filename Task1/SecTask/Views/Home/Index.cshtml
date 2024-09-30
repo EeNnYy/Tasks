@@ -1,14 +1,19 @@
 ﻿@model List<PizzaModel>
 
-
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
 <div class="Pizza-product-container">
-    @foreach(var item in Model)
+    @foreach (var item in Model)
     {
         <div class="my-flex-block">
-            <img class="Image" src="~/Images/@item.Src" alt="@item.Title" />
-            <p class="Title">@item.Title</p>
+            <img class="Image" data-id="@item.Id" src="/Images/@item.Src" alt="@item.Title" />
+            <a href="/Home/Detail/@item.Id" ;id="@item.Id" ; class="Title">@item.Title</a>
             <p class="Composition">@item.Description</p>
             <p class="Price">@item.Price</p>
         </div>
     }
 </div>
+<script>
+    $('.Image').on('click', function () {
+        window.location.href = '/Home/Detail/' + $('.Image').attr('data-id');
+    })
+</script>
