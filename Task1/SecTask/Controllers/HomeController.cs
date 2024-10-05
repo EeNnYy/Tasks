@@ -21,6 +21,12 @@ namespace SecTask.Controllers
 
             return Json(pizzaModelRepositories.GetPizzaModels());
         }
+        public JsonResult DetailJson(int JsonId)
+        {
+            PizzaModelRepositories pizzaModelRepositories = new PizzaModelRepositories();
+            var pizza= pizzaModelRepositories.FindById(JsonId);
+            return Json(pizza);
+        }
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -31,6 +37,11 @@ namespace SecTask.Controllers
             PizzaModelRepositories pizzaModelRepositories = new PizzaModelRepositories();
             var pizza = pizzaModelRepositories.FindById(id);
             return View(pizza);
+        }
+        public IActionResult IndexNew()
+        {
+            PizzaModelRepositories pizzaModelRepositories = new PizzaModelRepositories();
+            return View(pizzaModelRepositories.GetPizzaModels());
         }
         public IActionResult Privacy()
         {
