@@ -7,6 +7,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using System.Xml;
+using NLog;
+using Microsoft.Extensions.Logging;
+using NLog.Web;
 
 
 
@@ -15,11 +18,24 @@ namespace SecTask.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        Logger logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+
         public JsonResult GetPizzaJson()
         {
-            PizzaModelRepositories pizzaModelRepositories = new PizzaModelRepositories();
+            try
+            {
+                throw new Exception("");
+                PizzaModelRepositories pizzaModelRepositories = new PizzaModelRepositories();
 
-            return Json(pizzaModelRepositories.GetPizzaModels());
+                return Json(pizzaModelRepositories.GetPizzaModels());
+            }
+            catch (Exception e)
+            {
+                logger.Error(e, "Ошибка при получении списка пицц");
+               
+                return Json(new { success = false, message = "Произошла ошибка при загрузке данных." });
+            }
+
         }
         public JsonResult DetailJson(int JsonId)
         {
