@@ -1,0 +1,80 @@
+﻿@model List<PizzaModel>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<div class="Pizza-product-container">
+    @foreach (var item in Model)
+    {
+        <div class="my-flex-block">
+            <img class="Image" data-id="@item.Id" src="/Images/@item.Src" alt="@item.Title" />
+            <p data-togle="modal" id="@item.Id" class="Title">@item.Title</p>
+            <p class="Composition">@item.Description</p>
+            <p class="Price">@item.Price</p>
+        </div>
+    }
+</div>
+<script>
+    function ShowPizza(pizza) {
+        var modal = `<div class="Modal-Container">
+            <button class="Modal-Close">&times;</button> 
+            <img class="Modal-Image" data-id="${pizza.id}" src="/Images/${pizza.src}" alt="${pizza.title}" />
+            <p id="${pizza.id}" class="Title">${pizza.title}</p>
+            <p class="Modal-Composition">${pizza.description}</p>
+            <p class="Modal-Price">${pizza.price}</p>
+        </div>`
+        var overlay = `<div class="Overlay"></div>`;
+        $('body').append(overlay).append(modal);
+    }
+    $('.Image').on('click', function () {
+        var id = $(this).data('id')
+        $.ajax({
+            url: "/Home/DetailJson",
+            type: "POST",
+            data: { JsonId : id },
+            success: function (pizza) {
+                console.log(id)
+                ShowPizza(pizza)
+                $('.Overlay').on('click', function () {
+                    $('.Overlay').remove();
+                    $('.Modal-Container').remove();
+                });
+                $('.Modal-Close').on('click', function () {
+                    $('.Overlay').remove();
+                    $('.Modal-Container').remove();
+                });
+            }
+        })
+    })
+    $('.Overlay').on('click', function () {
+        $('.Overlay').remove();
+        $('.Modal-Container').remove();
+    });
+
+    $('.Title').on('click', function () {
+        var TitleText = this.innerHTML;
+        var FlexBlock = this.closest('.my-flex-block');
+        var Composition = $(FlexBlock).find('.Composition');
+        var CompositionText = $(Composition).html();
+        var Price = $(FlexBlock).find('.Price');
+        var PriceText = $(Price).html();
+        var Id = $(FlexBlock).find('.Image').data('id');
+        var Src = $(FlexBlock).find('.Image').attr('src');
+        var SrcText = Src.split('/').pop();
+        var pizza = {
+            id: Id,
+            src: SrcText,
+            title: TitleText,
+            description: CompositionText,
+            price: PriceText,
+        }
+        ShowPizza(pizza)
+        $('.Overlay').on('click', function () {
+            $('.Overlay').remove();
+            $('.Modal-Container').remove();
+        });
+        $('.Modal-Close').on('click', function () {
+            $('.Overlay').remove();
+            $('.Modal-Container').remove();
+        });
+            });
+    
+</script>
