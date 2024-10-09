@@ -1,0 +1,222 @@
+﻿@model List<PizzaModel>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<div class="Pizza-product-container">
+    @foreach (var item in Model)
+    {
+        <div class="my-flex-block" data-id="@item.Id">
+            <img class="Image" data-id="@item.Id" data-src="@item.Src" src="/Images/@item.Src" alt="@item.Title" />
+            <a href="/Home/Detail/@item.Id" ;id="@item.Id" class="Title">@item.Title</a>
+            <p class="Composition">@item.Description</p>
+            <p class="Price">@item.Price</p>
+            <div class="CRUDButtons">
+                <img src="/Icons/Create.png" alt="Add Pizza" class="AddButton" />
+                <img src="/Icons/Refresh.png" alt="Edit Pizza" class="RefreshButton" />
+                <img src="/Icons/Delete.png" alt="Delete Pizza" class="DeleteButton" />
+            </div>
+        </div>
+
+    }
+</div>
+<script>
+
+    function RefreshPizzas() {
+        $('.Pizza-product-container').empty();
+        $.ajax({
+            url: '/Home/GetPizzaJson',
+            type: "POST",
+            success: function (response) {
+                var str = "";
+                for (var i = 0; i < response.length; i++) {
+                    str += `<div class="my-flex-block" data-id="${response[i].id}">
+                                <img class="Image" data-id="${response[i].id}" data-src="${response[i].src}" src="/Images/${response[i].src}" alt="${response[i].title}" />
+                                    <a href="/Home/Detail/${response[i].id}" ;id="${response[i].id}" class="Title">${response[i].title}</a>
+                            <p class="Composition">${response[i].description}</p>
+                            <p class="Price">${response[i].price}</p>
+                        <div class="CRUDButtons">
+                            <img src="/Icons/Create.png" alt="Add Pizza" class="AddButton" />
+                            <img src="/Icons/Refresh.png" alt="Edit Pizza" class="RefreshButton" />
+                            <img src="/Icons/Delete.png" alt="Delete Pizza" class="DeleteButton" />
+                        </div>
+                    </div>`
+                }
+                $('.Pizza-product-container').append(str);
+            }
+        })
+    }
+
+    $('.Pizza-product-container').on('click', '.Image', function () {
+        window.location.href = '/Home/Detail/' + $(this).attr('data-id');
+    });
+
+
+    $(".Pizza-product-container").on('click', '.AddButton', function () {
+        var status = "add";
+        var ModalSQL = `
+                                <div class="modal-sql">
+                                    <span class="ModalSQL-Close">&times;</span>
+                                    <h2>Добавить Пиццу</h2>
+                                    <label for="title">Название:</label>
+                                    <input type="text" id="title" name="title" required>
+                                    <label for="src">Название изображения:</label>
+                                    <input type="text" id="src" name="src" required>
+                                    <label for="description">Описание:</label>
+                                    <textarea id="description" name="description" required></textarea>
+                                    <label for="price">Цена:</label>
+                                    <input type="text" id="price" name="price" required>
+                                    <p class="error-message" style="display: none; color: red;">Пожалуйста, заполните все поля.</p>
+                                    <button type="submit" >Добавить</button>
+                                </div>`;
+        var overlay = `<div class="Overlay"></div>`;
+        $('body').append(overlay).append(ModalSQL);
+
+        $('button[type="submit"]').on('click', function () {
+            var title = $('#title').val().trim();
+            var src = $('#src').val().trim();
+            var description = $('#description').val().trim();
+            var price = $('#price').val().trim();
+            if (!title || !src || !description || !price) {
+                $('.error-message').show(); // Показать сообщение об ошибке
+            }
+            else {
+                var updatedPizza = {
+                    title: $('#title').val(),
+                    src: $('#src').val(),
+                    description: $('#description').val(),
+                    price: $('#price').val(),
+                };
+                $.ajax({
+                    url: '/Home/CRUD',
+                    type: 'POST',
+                    data: { pizza: updatedPizza, status: status },
+                    success: function (message) {
+                        RefreshPizzas();
+                        alert(message);
+                        $('.Overlay').remove();
+                        $('.modal-sql').remove();
+                    },
+                })
+            }
+
+        });
+
+        $('.Overlay').on('click', function () {
+            $('.Overlay').remove();
+            $('.modal-sql').remove();
+        });
+
+
+        $('.ModalSQL-Close').on('click', function () {
+            $('.Overlay').remove();
+            $('.modal-sql').remove();
+        });
+
+    });
+
+
+    $('.Pizza-product-container').on('click', '.RefreshButton', function () {
+        var status = "refresh";
+        var FlexBlock = this.closest('.my-flex-block');
+        var pizza = {
+            id: $(FlexBlock).find('.Image').data('id'),
+            src: $(FlexBlock).find('.Image').data('src'),
+            title: $(FlexBlock).find('.Title').html(),
+            description: $(FlexBlock).find('.Composition').html(),
+            price: $(FlexBlock).find('.Price').html(),
+        }
+        var ModalSQL = `
+                                        <div class="modal-sql">
+                                            <input  id="id"  hidden>
+                                            <span class="ModalSQL-Close">&times;</span>
+                                            <h2>Обновить Пиццу</h2>
+                                            <label for="title">Название:</label>
+                                            <input type="text" id="title" name="title" required>
+                                            <label for="src">Название изображения:</label>
+                                            <input type="text" id="src" name="src" required>
+                                            <label for="description">Описание:</label>
+                                            <textarea id="description" name="description" required></textarea>
+                                            <label for="price">Цена:</label>
+                                            <input type="text" id="price" name="price" required>
+                                            <p class="error-message" style="display: none; color: red;">Пожалуйста, заполните все поля.</p>
+                                            <button     type="submit">Обновить</button>
+                                        </div>`;
+        var overlay = `<div class="Overlay"></div>`;
+        $('body').append(overlay).append(ModalSQL);
+        $('.Overlay').on('click', function () {
+            $('.Overlay').remove();
+            $('.modal-sql').remove();
+        });
+
+        $('.ModalSQL-Close').on('click', function () {
+            $('.Overlay').remove();
+            $('.modal-sql').remove();
+        });
+
+        $('#id').val(pizza.id);
+        $('#title').val(pizza.title);
+        $('#src').val(pizza.src);
+        $('#description').val(pizza.description);
+        $('#price').val(pizza.price);
+        $('button[type="submit"]').on('click', function () {
+            var title = $('#title').val().trim();
+            var src = $('#src').val().trim();
+            var description = $('#description').val().trim();
+            var price = $('#price').val().trim();
+            if (!title || !src || !description || !price) {
+                $('.error-message').show(); // Показать сообщение об ошибке
+            }
+            else{
+                var updatedPizza = {
+                    id: $('#id').val(),
+                    title: $('#title').val(),
+                    src: $('#src').val(),
+                    description: $('#description').val(),
+                    price: $('#price').val(),
+                };
+                $.ajax({
+                    url: "/Home/CRUD",
+                    type: "POST",
+                    data: { pizza: updatedPizza, status: status },
+                    success: function (message) {
+                        RefreshPizzas();
+                        alert(message);
+                        $('.Overlay').remove();
+                        $('.modal-sql').remove();
+                    },
+
+                })
+            }
+
+        });
+    });
+    $(".Pizza-product-container").on('click', '.DeleteButton', function () {
+        var status = "delete";
+        var FlexBlock = this.closest('.my-flex-block');
+        let result = confirm("Вы точно хотите удалить пиццу?");
+        if (result) {
+            var pizza = {
+                id: $(FlexBlock).find('.Image').data('id'),
+                src: $(FlexBlock).find('.Image').data('src'),
+                title: $(FlexBlock).find('.Title').html(),
+                description: $(FlexBlock).find('.Composition').html(),
+                price: $(FlexBlock).find('.Price').html(),
+            }
+            $.ajax({
+                url: '/Home/CRUD',
+                type: 'POST',
+                data: { pizza: pizza, status: status },
+                success: function (message) {
+                    RefreshPizzas();
+                    alert(message);
+                },
+            })
+        }
+
+
+
+
+
+
+
+    });
+</script>
